@@ -5,18 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión</title>
-    <link rel="icon" type="image/png" href="Resources/tablogo.png">
+    <link rel="icon" type="image/png" href="./Resources/tablogo.png">
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="Styles/stylelogin.css">
+    <link rel="stylesheet" href="./Styles/stylelogin.css">
 </head>
 
 <body>
     <!-- Contenedor agrupado: logo + video/texto (ahora a la izquierda) -->
     <div class="logo-corner-container">
-        <img id="logo" src="Resources/tuxfreedomlogo.png" alt="Logo Tux Freedom">
+        <img id="logo" src="./Resources/tuxfreedomlogo.png" alt="Logo Tux Freedom">
         <div class="corner-text">
             <video id="introVideo" autoplay muted loop>
-                <source src="Resources/intro.mp4" type="video/mp4">
+                <source src="./Resources/intro.mp4" type="video/mp4">
                 Tu navegador no soporta el elemento de video.
             </video>
             <h2>INICIA SESIÓN PARA COMENZAR TU MISIÓN:</h2> 
@@ -46,12 +46,12 @@
         <button id="btnReg">Registrarse</button>
     </div>
 
-    <script type="module" src="JS/firebase_config.js"></script>
-    <script type="module" src="JS/auth.js"></script>
-    <script type="module" src="JS/login.js"></script>
+    <script type="module" src="./JS/firebase_config.js"></script>
+    <script type="module" src="./JS/auth.js"></script>
+    <script type="module" src="./JS/login.js"></script>
 
-    <!-- nuevo: asigna el fondo desde resources/fondo.js -->
-    <script type="module" src="JS/set-background.js"></script>
+    <!-- Corregido: el nombre del archivo con la 'n' de background -->
+    <script type="module" src="./JS/set-background.js"></script>
     
     <!-- Script para manejar el video con pausa de 3 segundos -->
     <script>
