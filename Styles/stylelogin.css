@@ -1,0 +1,417 @@
+
+/* =========================================
+   TUXFREEDOM LOGIN STYLES - Matching index.html
+   ========================================= */
+
+/* Importar fuente Luckiest Guy */
+@font-face {
+    font-family: 'Luckiest Guy';
+    src: url('../Fonts/LuckiestGuy-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Variables CSS para consistencia */
+:root {
+    --stroke-shadow:
+        0 1px 0 #000,
+        1px 0 0 #000,
+        0 -1px 0 #000,
+        -1px 0 0 #000,
+        1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        -1px -1px 0 #000,
+        0 2px 1px #000,
+        2px 0 1px #000,
+        0 -2px 1px #000,
+        -2px 0 1px #000,
+        0 0 3px #000;
+}
+
+/* Reset y configuración básica */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    cursor: default;
+}
+
+/* Fondo con efecto blur similar al index.html */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../Resources/fondo.jpg') no-repeat center center fixed;
+    background-size: cover;
+    filter: blur(8px) brightness(0.7);
+    z-index: -1;
+}
+
+body {
+    background: none;
+    font-family: 'Luckiest Guy', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    font-size: 1.08rem;
+    gap: 70px; /* Margen aumentado aún más entre los dos contenedores */
+}
+
+/* Aplicar text-shadow a todos los textos como en index.html */
+h1, h2, h3, h4, h5, h6,
+p, span, label, small, strong, em, a, li,
+div {
+    text-shadow: var(--stroke-shadow);
+}
+
+/* Contenedor principal del login - ya no absolute, parte del flex */
+.card {
+    background: rgba(20, 20, 20, 0.35);
+    box-shadow: 0 24px 24px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 20px;
+    color: #fff;
+    font-family: 'Luckiest Guy', Arial, sans-serif;
+    max-width: clamp(320px, 90vw, 420px);
+    width: 100%;
+    text-align: center;
+    position: relative; /* Cambiado de absolute a relative */
+    z-index: 10;
+    flex-shrink: 0; /* No se encoge */
+    animation: aparecer 0.8s ease-out; /* Misma animación que el logo-video */
+}
+
+/* Títulos */
+.card h1, h1 {
+    color: #fff;
+    text-shadow: var(--stroke-shadow);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: 20px;
+    font-family: 'Luckiest Guy', Arial, sans-serif;
+    text-align: center;
+    animation: aparecer 0.8s ease-out; /* Misma duración que los contenedores */
+}
+
+.card h3 {
+    color: #fff;
+    text-shadow: var(--stroke-shadow);
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    margin: 20px 0 15px 0;
+    font-family: 'Luckiest Guy', Arial, sans-serif;
+    animation: aparecer 0.8s ease-out; /* Misma duración que los contenedores */
+}
+
+/* Labels */
+.card label {
+    color: #fff;
+    text-shadow: var(--stroke-shadow);
+    display: block;
+    text-align: left;
+    margin: 10px auto 5px auto;
+    font-size: 1.06em;
+    font-family: 'Luckiest Guy', Arial, sans-serif;
+    width: 100%;
+    max-width: 350px;
+    padding-left: 16px; /* Mismo padding que los inputs para alineación perfecta */
+    animation: aparecer 0.8s ease-out; /* Misma duración que los contenedores */
+}
+
+/* Inputs con estilo similar a index.html */
+.card input,
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    max-width: 350px;
+    padding: 12px 16px;
+    font-size: 1.1rem;
+    font-family: 'Consolas', monospace;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+    margin: 0 auto 15px auto;
+    text-transform: none;
+    transition: all 0.2s ease;
+    text-shadow: none;
+    cursor: text;
+    display: block;
+    animation: aparecer 0.8s ease-out; /* Misma duración que los contenedores */
+}
+
+.card input:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+    outline: none;
+    border-color: #2196f3;
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.02);
+}
+
+.card input::placeholder,
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+input[type="email"]::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 1;
+    text-shadow: none;
+}
+
+/* Botones con estilo exacto de index.html */
+.card button,
+button {
+    /* Estilo base propio */
+    font-weight: bold;
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+    /* Adaptación estilo button-29 */
+    align-items: center;
+    appearance: none;
+    background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #2196f3 100%);
+    border: 0;
+    border-radius: 15px;
+    box-shadow:
+        rgba(45, 35, 66, .4) 0 2px 4px,
+        rgba(45, 35, 66, .3) 0 7px 13px -3px,
+        rgba(58, 65, 111, .5) 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #fff;
+    height: 64px; /* Un poco más pequeño que index.html para login */
+    font-size: 1.5rem;
+
+    /* Borde de texto más intenso y ligeramente más grande */
+    text-shadow:
+        /* anillo 1px sin blur (8 direcciones) */
+        0 1px 0 #000,
+        1px 0 0 #000,
+        0 -1px 0 #000,
+        -1px 0 0 #000,
+        1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        -1px -1px 0 #000,
+        /* anillo 2px con leve blur para grosor */
+        0 2px 1px #000,
+        2px 0 1px #000,
+        0 -2px 1px #000,
+        -2px 0 1px #000,
+        /* suave realce global */
+        0 0 3px #000;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Luckiest Guy', Arial, sans-serif;
+    line-height: 1;
+    overflow: hidden;
+    padding-left: 12px;
+    padding-right: 12px;
+    position: relative;
+    transition: box-shadow .15s, transform .15s, background 0.2s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow, transform;
+    margin: 0 auto 15px auto;
+    display: block;
+    animation: aparecer 0.8s ease-out; /* Misma duración que los contenedores */
+}
+
+.card button:focus,
+button:focus {
+    box-shadow:
+        #2196f3 0 0 0 1.5px inset,
+        rgba(45, 35, 66, .4) 0 2px 4px,
+        rgba(45, 35, 66, .3) 0 7px 13px -3px,
+        #2196f3 0 -3px 0 inset;
+    outline: none;
+}
+
+.card button:hover,
+button:hover {
+    box-shadow:
+        rgba(45, 35, 66, .4) 0 4px 8px,
+        rgba(45, 35, 66, .3) 0 7px 13px -3px,
+        #2196f3 0 -3px 0 inset;
+    transform: translateY(-2px) scale(1.03);
+    background-image: radial-gradient(100% 100% at 100% 0, #6ee0ff 0, #1976d2 100%);
+}
+
+.card button:active,
+button:active {
+    box-shadow: #1976d2 0 3px 7px inset;
+    transform: translateY(2px) scale(0.98);
+}
+
+/* Separador */
+hr {
+    border: none;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 20px 0;
+    animation: aparecer 0.8s ease-out; /* Misma duración que los contenedores */
+}
+
+/* Mensajes de error/éxito */
+#mensaje {
+    margin: 5px 0;
+    padding: 0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-shadow: var(--stroke-shadow);
+    background: transparent; /* Sin fondo negro */
+    user-select: text;
+    cursor: text;
+}
+
+/* Contenedor agrupado: logo + corner-text */
+.logo-corner-container {
+    position: relative; /* Cambiado de fixed a relative */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 11;
+    animation: aparecer 0.8s ease-out;
+    flex-shrink: 0; /* No se encoge */
+}
+
+/* Logo Tux Freedom - arriba del contenedor */
+#logo {
+    width: clamp(160px, 28vw, 300px);
+    height: auto;
+    margin-bottom: 8px;
+    /* Render como sprite (sin suavizado) */
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
+    /* Sombra suave */
+    filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.45));
+    transition: transform 0.2s ease, filter 0.2s ease;
+    pointer-events: none;
+}
+
+#logo:hover {
+    transform: scale(1.06);
+    filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.55));
+}
+
+/* Texto en esquina - ajustado al ancho del logo */
+.corner-text {
+    background: rgba(20, 20, 20, 0.35);
+    border-radius: 15px;
+    padding: 16px 20px;
+    width: clamp(160px, 28vw, 300px); /* Mismo ancho que el logo */
+    text-align: center;
+    color: #fff;
+    font-family: 'Luckiest Guy', Arial, sans-serif;
+    box-shadow: 0 24px 24px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Video de introducción */
+#introVideo {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: transform 0.2s ease;
+}
+
+#introVideo:hover {
+    transform: scale(1.02);
+}
+
+.corner-text h2 {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    margin-bottom: 12px;
+    color: #fff;
+    text-shadow: var(--stroke-shadow);
+    line-height: 1.2;
+}
+
+.corner-text p {
+    font-size: clamp(0.5rem, 2.5vw, 1rem);
+    margin: 0px 0;
+    color: #fff;
+    text-shadow: var(--stroke-shadow);
+    line-height: 1.2;
+}
+
+/* Animación de aparición */
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividad */
+@media (max-width: 600px) {
+    body {
+        flex-direction: column; /* Apilar verticalmente en móvil */
+        gap: 40px; /* Espacio proporcionalmente mayor en móvil */
+    }
+    
+    .card {
+        padding: 16px;
+        margin: 0;
+        max-width: calc(100vw - 20px);
+    }
+    
+    .logo-corner-container {
+        align-items: center;
+    }
+    
+    #logo {
+        width: clamp(100px, 40vw, 180px);
+        margin-bottom: 6px;
+    }
+    
+    .corner-text {
+        width: clamp(100px, 40vw, 180px); /* Mismo ancho que el logo en móvil */
+        padding: 12px 16px;
+    }
+    
+    #introVideo {
+        margin-bottom: 5px;
+    }
+    
+    .corner-text h2 {
+        font-size: 1.2rem;
+    }
+    
+    .corner-text p {
+        font-size: 0.9rem;
+    }
+}

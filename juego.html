@@ -1,0 +1,2557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tux Freedom</title>
+    <link rel="icon" type="image/png" href="Resources/tablogo.png">
+    <style>
+        @font-face {
+            font-family: 'Luckiest Guy';
+            src: url('fonts/LuckiestGuy-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('Resources/fondo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            filter: blur(8px) brightness(0.7);
+            z-index: -1;
+        }
+
+        body {
+            background: none; /* Eliminar el gradiente anterior */
+            font-family: 'Luckiest Guy', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative; /* Añadir position relative */
+            font-size: 1.08rem; /* Texto ligeramente más grande en general */
+        }    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
+        }
+
+        /* Para los botones, mantener el cursor pointer */
+        .boton {
+            /* Estilo base propio */
+            font-weight: bold;
+            width: 100%;
+            max-width: 350px;   /* Más ancho */
+            text-align: center;
+            /* Adaptación estilo button-29 */
+            align-items: center;
+            appearance: none;
+            background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #2196f3 100%);
+            border: 0;
+            border-radius: 15px;
+            box-shadow:
+                rgba(45, 35, 66, .4) 0 2px 4px,
+                rgba(45, 35, 66, .3) 0 7px 13px -3px,
+                rgba(58, 65, 111, .5) 0 -3px 0 inset;
+            box-sizing: border-box;
+            color: #fff;
+            height: 70px; /* Reducido de 84px para mejor visualización */
+            font-size: 1.90rem; /* ligeramente más grande */
+
+            /* Borde de texto más intenso y ligeramente más grande */
+            text-shadow:
+                /* anillo 1px sin blur (8 direcciones) */
+                0 1px 0 #000,
+                1px 0 0 #000,
+                0 -1px 0 #000,
+                -1px 0 0 #000,
+                1px 1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000,
+                -1px -1px 0 #000,
+                /* anillo 2px con leve blur para grosor */
+                0 2px 1px #000,
+                2px 0 1px #000,
+                0 -2px 1px #000,
+                -2px 0 1px #000,
+                /* suave realce global */
+                0 0 3px #000;
+            cursor: pointer;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Luckiest Guy', "JetBrains Mono", Arial, sans-serif;
+            line-height: 1;
+            overflow: hidden;
+            padding-left: 12px;
+            padding-right: 12px;
+            position: relative;
+            transition: box-shadow .15s, transform .15s, background 0.2s;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+            will-change: box-shadow, transform;
+            font-size: 1.80rem;
+            margin-bottom: 8px;
+            text-shadow: var(--stroke-shadow);
+        }
+
+        .boton:focus {
+            box-shadow:
+                #2196f3 0 0 0 1.5px inset,
+                rgba(45, 35, 66, .4) 0 2px 4px,
+                rgba(45, 35, 66, .3) 0 7px 13px -3px,
+                #2196f3 0 -3px 0 inset;
+            outline: none;
+        }
+
+        .boton:hover {
+            box-shadow:
+                rgba(45, 35, 66, .4) 0 4px 8px,
+                rgba(45, 35, 66, .3) 0 7px 13px -3px,
+                #2196f3 0 -3px 0 inset;
+            transform: translateY(-2px) scale(1.03);
+            background-image: radial-gradient(100% 100% at 100% 0, #6ee0ff 0, #1976d2 100%);
+        }
+
+        .boton:active {
+            box-shadow: #1976d2 0 3px 7px inset;
+            transform: translateY(2px) scale(0.98);
+        }
+
+        /* Logo Tux Freedom (visible solo en menú) */
+        #logoTuxFreedom {
+            display: none;
+            position: fixed;
+            left: 32px;
+            top: 32px;
+            width: clamp(160px, 28vw, 360px);
+            height: auto;
+            /* Render como sprite (sin suavizado) */
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            -ms-interpolation-mode: nearest-neighbor;
+            /* Sombra suave */
+            filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.45));
+            transition: transform 0.2s ease, filter 0.2s ease;
+            z-index: 11;
+        }
+        #logoTuxFreedom:hover {
+            transform: scale(1.06);
+            filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.55));
+        }
+        /* Mostrar el logo cuando el menú está activo */
+        #juegoContenedor.menu-activo #logoTuxFreedom {
+            display: block;
+        }
+
+        #juegoContenedor {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            width: auto;
+            height: auto;
+            display: inline-block;
+        }
+        
+        /* Ocultar el contenedor cuando está en el menú principal */
+        #juegoContenedor.menu-activo {
+            background: transparent;
+            box-shadow: none;
+            padding: 0;
+        }
+        
+        #pantallaInicio {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Centra verticalmente los botones */
+            gap: 16px;
+            position: fixed;
+            left: 32px;
+            right: auto;
+            top: calc(32px + clamp(160px, 28vw, 360px) * 0.5625 + 24px); /* 0.5625 ≈ 9/16 para logo horizontal, ajusta si tu logo es más cuadrado */
+            bottom: 32px;
+            transform: none;
+            background: rgba(20, 20, 20, 0.35);
+            padding: 20px;
+            border-radius: 15px;
+            z-index: 10;
+            box-shadow: 0 24px 24px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(14px) saturate(180%);
+            -webkit-backdrop-filter: blur(14px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: clamp(160px, 28vw, 360px); /* Igual que el logo */
+            width: clamp(160px, 28vw, 360px);     /* Igual que el logo */
+            margin: 0;
+        }
+        
+        /* Ajuste responsivo: Si el logo es más cuadrado, puedes usar 1 en vez de 0.5625 */
+        @media (max-width: 600px) {
+            #pantallaInicio {
+                left: 8px;
+                top: calc(8px + clamp(100px, 40vw, 180px) + 12px);
+                width: clamp(100px, 40vw, 180px);
+                max-width: clamp(100px, 40vw, 180px);
+                padding: 16px;
+                border-radius: 10px;
+                bottom: 8px;
+            }
+            #logoTuxFreedom {
+                left: 8px;
+                top: 8px;
+                width: clamp(100px, 40vw, 180px);
+            }
+        }
+
+        /* Mantener solo algunos estilos básicos de responsividad para los menús laterales */
+        @media (max-width: 1200px) {
+            body {
+                font-size: 1rem;
+                padding: 15px;
+            }
+            
+            .boton {
+                max-width: 320px;
+                height: 64px;
+                font-size: 1.6rem;
+            }
+            
+            #logoTuxFreedom {
+                width: clamp(140px, 25vw, 320px);
+            }
+            
+            #pantallaInicio, #pantallaDashboard, #pantallaInstrucciones, #pantallaContinuar {
+                max-width: clamp(140px, 25vw, 320px);
+                width: clamp(140px, 25vw, 320px);
+                padding: 18px;
+                max-height: calc(100vh - 80px);
+                overflow-y: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .boton {
+                max-width: 250px;
+                height: 52px;
+                font-size: 1.2rem;
+                margin-bottom: 6px;
+            }
+            
+            #imagenFinal {
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                overflow-y: auto;
+                overflow-x: auto; /* Permitir scroll horizontal si el canvas no cabe */
+            }
+            
+            #pantallaInicio, #pantallaDashboard, #pantallaInstrucciones, #pantallaContinuar {
+                left: 8px;
+                top: calc(8px + clamp(100px, 40vw, 180px) + 12px);
+                width: clamp(100px, 40vw, 180px);
+                max-width: clamp(100px, 40vw, 180px);
+                padding: 14px;
+                border-radius: 10px;
+                bottom: 8px;
+                max-height: calc(100vh - 40px);
+                overflow-y: auto;
+            }
+            
+            #logoTuxFreedom {
+                left: 8px;
+                top: 8px;
+                width: clamp(100px, 40vw, 180px);
+            }
+            
+            .boton {
+                max-width: 220px;
+                height: 46px;
+                font-size: 1rem;
+                margin-bottom: 4px;
+            }
+            
+            #imagenFinal {
+                max-width: 250px;
+            }
+            
+            #inputHash {
+                max-width: 200px;
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        #pantallaInicio.activa {
+            display: flex;
+        }
+        
+        #pantallaFin {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        #pantallaFin.activa {
+            display: flex;
+        }
+        
+        /* Imagen final de victoria */
+        #imagenFinal {
+            width: 100%;
+            max-width: 450px; /* Ligeramente más ancha que antes (era 300px) */
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            transition: transform 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        #imagenFinal:hover {
+            transform: scale(1.02);
+        }
+        
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        #lienzo {
+            width: 800px;
+            height: 600px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            -ms-interpolation-mode: nearest-neighbor;
+        }
+        
+        #lienzo.activo {
+            display: block;
+        }
+        
+        #info {
+            display: none;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 1.1rem; /* Tamaño fijo */
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            width: 800px; /* Ancho fijo igual al canvas */
+        }
+        
+        #info.activo {
+            display: flex;
+        }
+        
+        .estadistica {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Puntuación en esquina superior derecha del canvas */
+        #puntuacion {
+            display: none;
+            position: absolute;
+            top: 35px; /* Ajustado para estar sobre el canvas */
+            right: 35px; /* Ajustado para estar sobre el canvas */
+            padding: 10px 20px;
+            font-size: 1.2rem; /* Tamaño fijo */
+            font-weight: bold;
+            text-shadow: var(--stroke-shadow);
+            z-index: 6;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+        
+        #puntuacion.activo {
+            display: block;
+        }
+        
+        #mensajeInvencible {
+            position: absolute;
+            top: 60px; /* Posición fija dentro del canvas */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            display: none;
+            animation: pulsar 0.5s infinite;
+            pointer-events: none;
+            z-index: 100;
+            width: 800px; /* Ancho igual al canvas */
+            text-align: center;
+            will-change: color, text-shadow, transform;
+        }
+        
+        @keyframes pulsar {
+            0%, 100% {
+                transform: translate(-50%, 0) scale(1);
+                color: #B8860B;
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            }
+            50% {
+                transform: translate(-50%, 0) scale(1.1);
+                color: #FFD700;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+            }
+        }
+        
+        /* NUEVO: Animación de invencibilidad para sprites de Tux */
+        @keyframes tuxInvencible {
+            0%, 100% {
+                filter: hue-rotate(40deg) brightness(1.2) saturate(1.5);
+            }
+            50% {
+                filter: hue-rotate(60deg) brightness(1.5) saturate(2);
+            }
+        }
+        
+        /* NUEVO: Clase para aplicar efecto de invencibilidad a Tux */
+        .tux-invencible {
+            animation: tuxInvencible 0.3s infinite alternate;
+        }
+        
+        .instrucciones p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        #cargando {
+            font-size: 1.5em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Variable con el mismo borde negro que usan los botones */
+        :root {
+            --stroke-shadow:
+                0 1px 0 #000,
+                1px 0 0 #000,
+                0 -1px 0 #000,
+                -1px 0 0 #000,
+                1px 1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000,
+                -1px -1px 0 #000,
+                0 2px 1px #000,
+                2px 0 1px #000,
+                0 -2px 1px #000,
+                -2px 0 1px #000,
+                0 0 3px #000;
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        p, span, label, small, strong, em, a, li,
+        #cargando, #mensajeInvencible, #info, .estadistica, div {
+            text-shadow: var(--stroke-shadow);
+        }
+
+        /* Subir un poco el tamaño de textos generales (no afecta botones) */
+        p, span, label, small, a, li, .estadistica, #info {
+            font-size: 1.06em;
+        }
+
+        #tux3dDecorativo {
+            transition: transform 0.2s ease, filter 0.2s ease;
+            position: fixed;
+            right: -1100px; /* INICIALMENTE fuera de la pantalla */
+            bottom: -650px;
+            width: 1100px;
+            max-width: 1200px;
+            min-width: 320px;
+            z-index: 5;
+            pointer-events: auto; /* Habilitar interacción */
+            user-select: none;
+            /* Animación de entrada */
+            animation-duration: 1.2s;
+            animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation-fill-mode: forwards;
+        }
+        
+        /* Responsividad simplificada para Tux 3D */
+        @media (max-width: 1400px) {
+            #tux3dDecorativo {
+                width: 700px;
+                right: -700px;
+                bottom: -450px;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            #tux3dDecorativo {
+                width: 500px;
+                right: -500px;
+                bottom: -320px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            #tux3dDecorativo {
+                width: 320px;
+                right: -320px;
+                bottom: -200px;
+            }
+        }
+        
+        /* Eliminar área de hover separada - usar directo en la imagen */
+        #tux3dHoverArea {
+            display: none;
+        }
+        
+        /* Animación de entrada desde la derecha */
+        @keyframes tuxEntrada {
+            0% {
+                right: -1100px;
+                transform: scale(0.8) rotate(5deg);
+                opacity: 0.7;
+            }
+            60% {
+                right: 20px;
+                transform: scale(1.05) rotate(-2deg);
+                opacity: 1;
+            }
+            80% {
+                right: 5px;
+                transform: scale(0.98) rotate(1deg);
+            }
+            100% {
+                right: 10px;
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        
+        /* Animaciones responsivas para diferentes pantallas */
+        @media (max-width: 1600px) {
+            @keyframes tuxEntrada {
+                0% { right: -900px; transform: scale(0.8) rotate(5deg); opacity: 0.7; }
+                60% { right: 15px; transform: scale(1.05) rotate(-2deg); opacity: 1; }
+                80% { right: 5px; transform: scale(0.98) rotate(1deg); }
+                100% { right: 8px; transform: scale(1) rotate(0deg); opacity: 1; }
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            @keyframes tuxEntrada {
+                0% { right: -700px; transform: scale(0.8) rotate(5deg); opacity: 0.7; }
+                60% { right: 12px; transform: scale(1.05) rotate(-2deg); opacity: 1; }
+                80% { right: 4px; transform: scale(0.98) rotate(1deg); }
+                100% { right: 6px; transform: scale(1) rotate(0deg); opacity: 1; }
+            }
+        }
+        
+        @media (max-width: 900px) {
+            @keyframes tuxEntrada {
+                0% { right: -500px; transform: scale(0.8) rotate(5deg); opacity: 0.7; }
+                60% { right: 8px; transform: scale(1.05) rotate(-2deg); opacity: 1; }
+                80% { right: 2px; transform: scale(0.98) rotate(1deg); }
+                100% { right: 4px; transform: scale(1) rotate(0deg); opacity: 1; }
+            }
+        }
+        
+        @media (max-width: 768px) {
+            @keyframes tuxEntrada {
+                0% { right: -400px; transform: scale(0.8) rotate(5deg); opacity: 0.7; }
+                60% { right: 6px; transform: scale(1.05) rotate(-2deg); opacity: 1; }
+                80% { right: 1px; transform: scale(0.98) rotate(1deg); }
+                100% { right: 3px; transform: scale(1) rotate(0deg); opacity: 1; }
+            }
+        }
+        
+        @media (max-width: 600px) {
+            @keyframes tuxEntrada {
+                0% { right: -320px; transform: scale(0.8) rotate(5deg); opacity: 0.7; }
+                60% { right: 4px; transform: scale(1.05) rotate(-2deg); opacity: 1; }
+                80% { right: 1px; transform: scale(0.98) rotate(1deg); }
+                100% { right: 2px; transform: scale(1) rotate(0deg); opacity: 1; }
+            }
+        }
+        
+        /* Clase para activar la animación */
+        #tux3dDecorativo.entrada {
+            animation-name: tuxEntrada;
+        }
+        
+        /* Efecto hover con mayor especificidad */
+        img#tux3dDecorativo:hover {
+            transform: scale(1.03) translateY(-2px);
+            filter: drop-shadow(0 18px 36px rgba(0,0,0,0.55));
+        }
+        
+        /* Clase legacy para compatibilidad */
+        #tux3dDecorativo.hovered {
+            transform: scale(1.03) translateY(-2px);
+            filter: drop-shadow(0 18px 36px rgba(0,0,0,0.55));
+        }
+
+        #modalAudioOverlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 999;
+            padding: 20px;
+        }
+        #modalAudioOverlay.activo {
+            display: flex;
+        }
+        #modalAudio {
+            background: rgba(20, 20, 20, 0.85);
+            border-radius: 18px;
+            padding: 32px 28px;
+            max-width: clamp(260px, 48vw, 420px);
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 24px 42px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(18px) saturate(180%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        #modalAudio h2 {
+            margin-bottom: 12px;
+            font-size: clamp(1.4rem, 3vw, 2.1rem);
+        }
+        #modalAudio p {
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        #modalAudioBoton[disabled] {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        #pantallaInstrucciones {
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start; /* Cambiar de center a flex-start */
+            align-items: center;
+            gap: 16px;
+            position: fixed;
+            left: 32px;
+            right: auto;
+            top: calc(32px + clamp(160px, 28vw, 360px) * 0.5625 + 24px);
+            bottom: 32px;
+            background: rgba(20, 20, 20, 0.35);
+            padding: 16px;
+            border-radius: 15px;
+            z-index: 10;
+            box-shadow: 0 24px 24px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(14px) saturate(180%);
+            -webkit-backdrop-filter: blur(14px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: clamp(160px, 28vw, 360px); /* Igual que el logo */
+            width: clamp(160px, 28vw, 360px);     /* Igual que el logo */
+            text-align: center;
+            overflow-y: auto; /* Permitir scroll vertical */
+            max-height: calc(100vh - 120px); /* Limitar altura máxima */
+        }
+        #pantallaInstrucciones h2 {
+            font-size: clamp(1rem, 4vw, 2.4rem);
+        }
+        #pantallaInstrucciones p,
+        #pantallaInstrucciones li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            list-style: none;
+        }
+        #pantallaInstrucciones.activa {
+            display: flex;
+        }
+        
+        /* Asegurar que el botón VOLVER siempre esté visible */
+        #pantallaInstrucciones .boton {
+            margin-top: auto; /* Empujar el botón hacia abajo */
+            flex-shrink: 0; /* No permitir que se encoja */
+            min-height: 48px; /* Altura mínima garantizada */
+        }
+        
+        /* Contenedor del contenido de instrucciones */
+        #pantallaInstrucciones ul {
+            padding: 0;
+            margin: 0;
+            flex: 1; /* Tomar el espacio disponible */
+            overflow-y: auto; /* Scroll si es necesario */
+        }
+        
+        /* Ajustes simplificados para pantallas pequeñas */
+        @media (max-width: 480px) {
+            #pantallaInstrucciones,
+            #pantallaContinuar {
+                gap: 10px;
+                padding: 12px;
+                max-height: calc(100vh - 80px);
+            }
+            
+            #inputHash {
+                max-width: 180px;
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+        }
+    #pantallaDashboard {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    position: fixed;
+    left: 32px;
+    right: auto;
+    top: calc(32px + clamp(160px, 28vw, 360px) * 0.5625 + 24px);
+    bottom: 32px;
+    background: rgba(20, 20, 20, 0.35);
+    padding: 20px;
+    border-radius: 15px;
+    z-index: 10;
+    box-shadow: 0 24px 24px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    max-width: clamp(160px, 28vw, 360px);
+    width: clamp(160px, 28vw, 360px);
+    text-align: center;
+}
+
+#pantallaDashboard.activa {
+    display: flex;
+}
+
+#pantallaDashboard h2 {
+    font-size: clamp(1.2rem, 4vw, 2rem);
+    margin-bottom: 10px;
+    color: #fff;
+    text-shadow: var(--stroke-shadow);
+}
+
+.tabla-container {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    max-height: none; /* Permitir que use el espacio disponible */
+}
+
+#tablaPuntajes {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+    font-size: 0.9rem;
+}
+
+#tablaPuntajes th,
+#tablaPuntajes td {
+    padding: 6px 8px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+#tablaPuntajes th {
+    background: rgba(255,255,255,0.1);
+    font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+    #pantallaDashboard {
+        left: 8px;
+        top: calc(8px + clamp(100px, 40vw, 180px) + 12px);
+        width: clamp(100px, 40vw, 180px);
+        max-width: clamp(100px, 40vw, 180px);
+        padding: 16px;
+        border-radius: 10px;
+        bottom: 8px;
+    }
+    
+    #tablaPuntajes {
+        font-size: 0.8rem;
+    }
+    
+    #tablaPuntajes th,
+    #tablaPuntajes td {
+        padding: 4px 6px;
+    }
+}
+
+/* CHANGE: Adding styles for Continue Adventure screen */
+#pantallaContinuar {
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start; /* Cambiar de center a flex-start */
+    align-items: center;
+    gap: 10px; /* Reducido de 16px */
+    position: fixed;
+    left: 32px;
+    right: auto;
+    top: calc(32px + clamp(160px, 28vw, 360px) * 0.5625 + 24px);
+    bottom: 32px;
+    background: rgba(20, 20, 20, 0.35);
+    padding: 20px;
+    border-radius: 15px;
+    z-index: 10;
+    box-shadow: 0 24px 24px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    max-width: clamp(160px, 28vw, 360px);
+    width: clamp(160px, 28vw, 360px);
+    text-align: center;
+    overflow-y: auto; /* Permitir scroll vertical */
+    max-height: calc(100vh - 120px); /* Limitar altura máxima */
+}
+
+#pantallaContinuar.activa {
+    display: flex;
+}
+
+/* Asegurar que los botones de CONTINUAR siempre estén visibles */
+#pantallaContinuar .boton {
+    margin-top: auto; /* Empujar los botones hacia abajo */
+    flex-shrink: 0; /* No permitir que se encojan */
+    min-height: 48px; /* Altura mínima garantizada */
+}
+
+/* Contenedor del contenido superior de continuar partida */
+#pantallaContinuar h2,
+#pantallaContinuar p,
+#pantallaContinuar #inputHash {
+    flex-shrink: 0; /* No permitir que se encojan */
+}
+
+#pantallaContinuar h2 {
+    font-size: clamp(1.2rem, 4vw, 2rem);
+    margin-bottom: 5px; /* Reducido de 10px */
+}
+
+#pantallaContinuar p {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 8px; /* Reducido de 15px */
+}
+
+#inputHash {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-family: 'Consolas', monospace;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #5adaff;
+    backdrop-filter: blur(10px);
+    margin-bottom: 6px; /* Reducido de 10px */
+    transition: all 0.2s ease;
+    cursor: default;
+}
+
+#inputHash::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 1;
+    text-shadow: none;
+}
+
+#inputHash:focus {
+    outline: none;
+    border-color: #2196f3;
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.02);
+    cursor: text;
+}
+
+@media (max-width: 600px) {
+    #pantallaContinuar {
+        left: 8px;
+        top: calc(8px + clamp(100px, 40vw, 180px) + 12px);
+        width: clamp(100px, 40vw, 180px);
+        max-width: clamp(100px, 40vw, 180px);
+        padding: 16px;
+        border-radius: 10px;
+        bottom: 8px;
+    }
+}
+/* END CHANGE */
+    </style>
+</head>
+<body>
+    <div id="modalAudioOverlay">
+        <div id="modalAudio" role="dialog" aria-modal="true" aria-labelledby="modalAudioTitulo">
+            <h2 id="modalAudioTitulo">CARGANDO</h2>
+            <p id="modalAudioTexto">El botón se habilitará en 5 segundos.</p>
+            <button id="modalAudioBoton" class="boton" disabled>Continuar (5)</button>
+        </div>
+    </div>
+    <div id="juegoContenedor" class="menu-activo">
+        <div id="cargando">Cargando recursos... 🐧</div>
+
+        <!-- Logo Tux Freedom -->
+        <img id="logoTuxFreedom" src="Resources/tuxfreedomlogo.png" alt="Tux Freedom Logo" />
+
+        <div id="pantallaInicio">
+            <button class="boton" onclick="reproducirSonidoSelect(); iniciarJuego()">NUEVA AVENTURA</button>
+            <button class="boton" onclick="reproducirSonidoSelect(); continuarAventura()">CONTINUAR AVENTURA</button>
+            <button class="boton" onclick="reproducirSonidoSelect(); mostrarInstrucciones()">INSTRUCCIONES</button>
+            <button class="boton" onclick="reproducirSonidoSelect(); mostrarDashboard()">DASHBOARD</button>
+            <button class="boton" onclick="reproducirSonidoSelect(); cerrarSesion()">SALIR</button>
+        </div>
+    <div id="pantallaDashboard">
+    <h2>Tabla de Puntajes</h2>
+    <div class="tabla-container">
+        <table id="tablaPuntajes">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Puntuación</th>
+                </tr>
+            </thead>
+            <tbody id="tablaPuntajesBody">
+                <!-- Aquí se insertarán las filas dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+    <button class="boton" onclick="reproducirSonidoSelect(); cerrarDashboard()">VOLVER</button>
+</div>    
+        <div id="pantallaInstrucciones">
+            <h2>Cómo jugar</h2>
+            <ul>
+                <li>🎮 <u>Flechas / WASD:</u> Mueve a Tux.</li>
+                <li>❌ </u>Esquiva:</u> los sistemas operativos.</li>
+                <li>⚡ </u>Power-Up:</u> Toma kernels para obtener 5&nbsp;segundos de invencibilidad.</li>
+                <li>🐠 </u>1-Up:</u> Toma peces y aumenta vidas.</li>
+                <li>🎯 </u>Objetivo:</u> Sobrevive 60&nbsp;segundos en 10 niveles cada vez más difíciles.</li>
+                <li>⏸️ </u>Espacio:</u> Muestra el menú de pausa.</li>
+                <li>⏪ </u>Escape:</u> Regresa al menú principal.</li>
+            </ul>
+            <p>¡Mantente alerta y libera a Tux!</p>
+            <button class="boton" onclick="reproducirSonidoSelect(); cerrarInstrucciones()">VOLVER</button>
+        </div>
+        
+        <!-- CHANGE: Adding Continue Adventure screen -->
+        <div id="pantallaContinuar">
+            <h2>CONTINUAR AVENTURA</h2>
+            <p>Ingresa el código donde te quedaste para continuar tu aventura:</p>
+            <input 
+                type="text" 
+                id="inputHash" 
+                placeholder="Ej: TUX-5-A3B2C1"
+                maxlength="50"
+            />
+            <button class="boton" onclick="reproducirSonidoSelect(); procesarContinuar()">CONTINUAR</button>
+            <button class="boton" onclick="reproducirSonidoSelect(); cerrarContinuar()">VOLVER</button>
+        </div>
+        <!-- END CHANGE -->
+
+        <div id="pantallaFin">
+            <h1 id="mensajeFinal"></h1>
+            <h2 id="estadisticasFinal"></h2>
+            <img id="imagenFinal" src="Resources/end.png" alt="Imagen de victoria" style="display: none;">
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <button class="boton" onclick="reproducirSonidoSelect(); reiniciarJuego()">JUGAR DE NUEVO</button>
+                <button class="boton" onclick="reproducirSonidoSelect(); volverAlMenu()">MENÚ PRINCIPAL</button>
+            </div>
+        </div>
+        
+        <canvas id="lienzo" width="800" height="600" style="display: none;"></canvas>
+        <div id="puntuacion">
+            Puntos: <span id="puntos">0</span>
+        </div>
+        <div id="info">
+            <div class="estadistica">Nivel: <span id="nivelActual">1</span></div>
+            <div class="estadistica">Tiempo: <span id="tiempo">60</span>s</div>
+            <div class="estadistica">Vidas: <span id="vidas">3</span></div>
+        </div>
+        <div id="mensajeInvencible"> ¡INVENCIBLE! </div>
+
+        <!-- Área de hover invisible para 3D Tux (debe ir ANTES de la imagen) -->
+        <div id="tux3dHoverArea"></div>
+        
+        <!-- Imagen decorativa 3D Tux, esquina inferior derecha -->
+        <img
+            id="tux3dDecorativo"
+            src="Resources/3dtux.png"
+            alt="Tux 3D"
+            style="
+                position: fixed;
+                right: -1100px;
+                bottom: -650px;
+                width: 1100px; /* Cambia este valor para escalar (ej: 40vw, 60vw, 600px, etc) */
+                max-width: 1200px; /* Limita el tamaño máximo si lo deseas */
+                min-width: 320px; /* Tamaño mínimo para pantallas pequeñas */
+                z-index: 5; /* Ajusta si quieres que esté delante o detrás de otros elementos */
+                pointer-events: auto; /* Permitir interacción para hover */
+                user-select: none;
+                /* Puedes ajustar estos valores para mover la imagen en X/Y */
+                /* Por ejemplo: right: 40px; bottom: 20px; */
+            "
+        />
+    </div>
+
+    <script>
+        const lienzo = document.getElementById('lienzo');
+        const ctx = lienzo.getContext('2d');
+        
+        // Modificar las propiedades de renderizado del contexto
+        ctx.imageSmoothingEnabled = false;       // Deshabilita el suavizado
+        ctx.mozImageSmoothingEnabled = false;    // Firefox
+        ctx.webkitImageSmoothingEnabled = false; // Safari
+        ctx.msImageSmoothingEnabled = false;     // IE
+        
+        // Variables del juego
+        let juegoActivo = false;
+        let juegoPausado = false;
+        let nivel = 1;
+        let vidas = 3;
+        let puntuacion = 0; // NUEVO: variable de puntuación
+        let tiempoRestante = 60;
+        let invencible = false;
+        let tiempoInvencible = 0;
+        let recursosCargados = false;
+        let codigoNivelActual = ''; // NUEVO: código de nivel actual para pausa
+        
+        // ============================================
+        // SISTEMA DE AUDIO - MÚSICA DE FONDO
+        // ============================================
+        
+        // CONTROLADOR DE VOLUMEN PRINCIPAL
+        // Ajusta estos valores entre 0.0 (silencio) y 1.0 (volumen máximo)
+        const VOLUMEN_MUSICA = {
+            menuSong: 0.5,        // Volumen de la música del menú (ajústalo aquí)
+            backgroundSong: 0.5   // Volumen de la música del juego (ajústalo aquí)
+        };
+        
+        const musica = {
+            menu: new Audio('Sound/Music/Menu Song.wav'),
+            background: new Audio('Sound/Music/Background Song.wav')
+        };
+
+        // Precargar para minimizar latencias/bloqueos
+        musica.menu.preload = 'auto';
+        musica.background.preload = 'auto';
+        
+        // Configurar las canciones para loop continuo
+        musica.menu.loop = true;
+        musica.background.loop = true;
+        
+        // Aplicar volúmenes configurados
+        musica.menu.volume = VOLUMEN_MUSICA.menuSong;
+        musica.background.volume = VOLUMEN_MUSICA.backgroundSong;
+        
+        let musicaActual = null;
+        let musicaIniciada = false;
+        let audioDesbloqueado = false;
+        let audioConsentido = false;
+        const modalAudioOverlay = document.getElementById('modalAudioOverlay');
+        const modalAudioBoton = document.getElementById('modalAudioBoton');
+        const modalAudioTexto = document.getElementById('modalAudioTexto');
+        let intervaloModalAudio = null;
+        
+        function desbloquearAudio() {
+            if (audioDesbloqueado) return Promise.resolve();
+            const intentos = [musica.menu, musica.background].map(audio => {
+                audio.muted = true;
+                return audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audio.muted = false;
+                }).catch(() => {
+                    audio.muted = false;
+                });
+            });
+            return Promise.all(intentos).then(() => {
+                audioDesbloqueado = true;
+            });
+        }
+        
+        function reproducirMusicaMenu() {
+            if (musicaActual === 'menu') return;
+            musica.background.pause();
+            musica.background.currentTime = 0;
+            musica.menu.muted = false;
+            musica.menu.volume = VOLUMEN_MUSICA.menuSong;
+            musica.menu.play().catch(e => console.log('Error reproduciendo Menu Song:', e));
+            musicaActual = 'menu';
+            musicaIniciada = true;
+        }
+        
+        // Función para reproducir música de fondo del juego
+        function reproducirMusicaJuego() {
+            if (musicaActual === 'background') return; // Ya está sonando
+            
+            // Detener música del menú si está sonando
+            musica.menu.pause();
+            musica.menu.currentTime = 0;
+            
+            // Reproducir música de fondo
+            musica.background.volume = VOLUMEN_MUSICA.backgroundSong;
+            musica.background.play().catch(e => console.log('Error reproduciendo Background Song:', e));
+            musicaActual = 'background';
+            musicaIniciada = true;
+        }
+        
+        // Función para reducir volumen de música de fondo (pausa/cuenta regresiva)
+        function reducirVolumenMusicaJuego() {
+            if (musicaActual === 'background') {
+                musica.background.volume = VOLUMEN_MUSICA.backgroundSong * 0.3; // 30% del volumen configurado
+            }
+        }
+        
+        // Función para restaurar volumen de música de fondo
+        function restaurarVolumenMusicaJuego() {
+            if (musicaActual === 'background') {
+                musica.background.volume = VOLUMEN_MUSICA.backgroundSong; // Volumen normal configurado
+            }
+        }
+        
+        // Iniciar música con la primera interacción del usuario
+        function iniciarMusicaConInteraccion() {
+            if (!audioConsentido || musicaIniciada) return;
+            desbloquearAudio().then(() => {
+                if (!musicaIniciada) {
+                    reproducirMusicaMenu();
+                    quitarListenersInicioMusica();
+                }
+            });
+        }
+
+        function mostrarModalAudio() {
+            if (!modalAudioOverlay || !modalAudioBoton) return;
+            modalAudioOverlay.classList.add('activo');
+            modalAudioBoton.disabled = true;
+            let restante = 5;
+            modalAudioBoton.textContent = `Continuar (${restante})`;
+            if (modalAudioTexto) {
+                modalAudioTexto.textContent = 'Cargando todos los recursos';
+            }
+            clearInterval(intervaloModalAudio);
+            intervaloModalAudio = setInterval(() => {
+                restante--;
+                if (restante > 0) {
+                    modalAudioBoton.textContent = `Continuar (${restante})`;
+                } else {
+                    clearInterval(intervaloModalAudio);
+                    modalAudioBoton.disabled = false;
+                    modalAudioBoton.textContent = 'Continuar';
+                    modalAudioBoton.focus();
+                }
+            }, 1000);
+        }
+
+        function aceptarReproduccionAudio() {
+            if (modalAudioOverlay) {
+                modalAudioOverlay.classList.remove('activo');
+            }
+            audioConsentido = true;
+            reproducirSonidoSelect();
+            iniciarMusicaConInteraccion();
+            
+            // NUEVO: Activar animación de entrada del Tux 3D usando JavaScript
+            setTimeout(() => {
+                const tux3d = document.getElementById('tux3dDecorativo');
+                if (tux3d) {
+                    // Aplicar la animación CSS
+                    tux3d.classList.add('entrada');
+                    
+                    // Después de la animación, limpiar todo y permitir hover
+                    setTimeout(() => {
+                        // Remover la animación
+                        tux3d.classList.remove('entrada');
+                        
+                        // Limpiar completamente los estilos inline que interfieren
+                        tux3d.style.animation = '';
+                        tux3d.style.animationName = '';
+                        tux3d.style.animationDuration = '';
+                        tux3d.style.animationTimingFunction = '';
+                        tux3d.style.animationFillMode = '';
+                        
+                        // Establecer solo la posición final necesaria
+                        tux3d.style.right = '10px';
+                        tux3d.style.bottom = '-650px';
+                        tux3d.style.transform = '';
+                        tux3d.style.opacity = '';
+                        
+                        console.log('✅ Tux 3D: Animación completada, hover en píxeles no transparentes habilitado');
+                    }, 1300); // Un poco más de tiempo para asegurar que termine
+                }
+            }, 300);
+        }
+
+        if (modalAudioBoton) {
+            modalAudioBoton.addEventListener('click', aceptarReproduccionAudio);
+        }
+        // ============================================
+        // FIN SISTEMA DE AUDIO - MÚSICA DE FONDO
+        // ============================================
+        
+        // Imágenes
+        const imagenes = {
+            fondo: new Image(),
+            tuxStand: new Image(),
+            tuxRight: [],
+            tuxLeft: [],
+            windows: new Image(),
+            ios: new Image(),
+            macos: new Image(),
+            msdos: new Image(),
+            kernel: new Image(),
+            oneUp: new Image(), // NUEVO: imagen 1up
+            tuxFreedomLogo: new Image()
+        };
+        
+        // Cargar todas las imágenes
+        imagenes.fondo.src = 'Resources/fondo.jpg';
+        imagenes.tuxStand.src = 'Resources/tux_stand.png';
+        for (let i = 1; i <= 8; i++) {
+            const imgRight = new Image();
+            imgRight.src = `Resources/tux_right_${i}.png`;
+            imagenes.tuxRight.push(imgRight);
+
+            const imgLeft = new Image();
+            imgLeft.src = `Resources/tux_left_${i}.png`;
+            imagenes.tuxLeft.push(imgLeft);
+        }
+        imagenes.windows.src = 'Resources/windows.png';
+        imagenes.ios.src = 'Resources/ios.png';
+        imagenes.macos.src = 'Resources/macos.png';
+        imagenes.msdos.src = 'Resources/msdos.png';
+        imagenes.kernel.src = 'Resources/kernel.png';
+        imagenes.oneUp.src = 'Resources/1up.png'; // NUEVO: cargar imagen 1up
+        imagenes.tuxFreedomLogo.src = 'Resources/tuxfreedomlogo.png';
+        
+        // Configuración del sprite de Tux
+        const tuxSprite = {
+            frameActual: 0,
+            framesTotal: 8,
+            velocidadAnimacion: 4,
+            contadorAnimacion: 0,
+            direccion: 0 // 0: quieto, -1: izquierda, 1: derecha
+        };
+        
+        // Cargar imágenes
+        let imagenesCargar = 20; // Actualizado de 19 a 20 para incluir 1up
+        let imagenesCargadas = 0;
+        
+        function imagenCargada() {
+            imagenesCargadas++;
+            if (imagenesCargadas >= imagenesCargar) {
+                recursosCargados = true;
+                document.getElementById('cargando').style.display = 'none';
+                document.getElementById('pantallaInicio').classList.add('activa');
+                document.getElementById('juegoContenedor').classList.add('menu-activo');
+                setTimeout(() => {
+                    if (audioConsentido && !musicaIniciada) {
+                        reproducirMusicaMenu();
+                    }
+                }, 100);
+            }
+        }
+        
+        imagenes.fondo.onload = imagenCargada;
+        imagenes.tuxStand.onload = imagenCargada;
+        imagenes.windows.onload = imagenCargada;
+        imagenes.ios.onload = imagenCargada;
+        imagenes.macos.onload = imagenCargada;
+        imagenes.msdos.onload = imagenCargada;
+        imagenes.kernel.onload = imagenCargada;
+        imagenes.oneUp.onload = imagenCargada;
+        imagenes.tuxFreedomLogo.onload = imagenCargada;
+        
+        // Agregar eventos de carga para los sprites de movimiento
+        imagenes.tuxRight.forEach(img => img.onload = imagenCargada);
+        imagenes.tuxLeft.forEach(img => img.onload = imagenCargada);
+        
+        // Jugador (Tux)
+        const jugador = {
+            x: lienzo.width / 2 - 45, // Ajustado para el nuevo tamaño
+            y: lienzo.height - 110,   // Ajustado para el nuevo tamaño
+            ancho: 60,                // Hitbox más pequeña
+            alto: 60,                // Hitbox más pequeña
+            velocidad: 7,
+            tamanoVisual: 90         // Sprite más grande
+        };
+        
+        // Arrays para objetos que caen
+        let objetosCayendo = [];
+        let kernels = [];
+        let oneUps = []; // NUEVO: array para 1ups
+        
+        // Control de teclas
+        const teclas = {};
+        
+        // Logos de sistemas operativos con sus imágenes
+        const logosSO = [
+            { nombre: 'Windows', imagen: imagenes.windows },
+            { nombre: 'MacOS', imagen: imagenes.macos },
+            { nombre: 'iOS', imagen: imagenes.ios },
+            { nombre: 'MSDOS', imagen: imagenes.msdos }
+        ];
+        
+        // Configuración de dificultad por nivel
+        function obtenerConfigNivel(nivel) {
+            const velocidadBase = 2 + (nivel * 0.75);
+            const frecuenciaBase = Math.max(25 - (nivel * 2), 5);
+            return {
+                velocidad: velocidadBase,
+                frecuencia: frecuenciaBase
+            };
+        }
+        
+        // Eventos de teclado
+        document.addEventListener('keydown', (e) => {
+            teclas[e.key] = true;
+            if (juegoActivo) {
+                if (e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault();
+                    if (juegoPausado) {
+                        if (!cuentaRegresivaActiva) {
+                            cuentaRegresivaActiva = true;
+                            // Ocultar mensaje de invencible durante la pausa
+                            document.getElementById('mensajeInvencible').style.display = 'none';
+                            reducirVolumenMusicaJuego(); // Reducir volumen durante cuenta regresiva
+                            mostrarCuentaRegresiva(() => {
+                                juegoPausado = false;
+                                cuentaRegresivaActiva = false;
+                                restaurarVolumenMusicaJuego(); // Restaurar volumen al reanudar
+                                // Mostrar mensaje de invencible si aún está activo
+                                if (invencible) {
+                                    document.getElementById('mensajeInvencible').style.display = 'block';
+                                }
+                            });
+                        }
+                    } else {
+                        juegoPausado = true;
+                        reproducirSonidoPause(); // NUEVO: sonido al pausar
+                        reducirVolumenMusicaJuego(); // Reducir volumen al pausar
+                        // Ocultar mensaje de invencible durante la pausa
+                        document.getElementById('mensajeInvencible').style.display = 'none';
+                    }
+                } else if (e.key === 'Escape' && juegoPausado && !cuentaRegresivaActiva) {
+                    // Salir al menú principal cuando se presiona Escape durante la pausa (NO durante cuenta regresiva)
+                    reproducirSonidoSelect(); // NUEVO: sonido de botón al volver al menú desde pausa
+                    volverAlMenu();
+                } else if (e.key === 'c' && juegoPausado && !cuentaRegresivaActiva && codigoNivelActual) {
+                    // NUEVO: Copiar código de nivel al presionar C durante la pausa (NO durante cuenta regresiva)
+                    e.preventDefault();
+                    navigator.clipboard.writeText(codigoNivelActual).then(() => {
+                        console.log('Código de nivel copiado al portapapeles:', codigoNivelActual);
+                        reproducirSonidoSelect(); // Sonido de confirmación
+                    }).catch(err => {
+                        console.error('Error al copiar código:', err);
+                        // Fallback para navegadores más antiguos
+                        const textarea = document.createElement('textarea');
+                        textarea.value = codigoNivelActual;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        console.log('Código copiado usando fallback');
+                        reproducirSonidoSelect();
+                    });
+                }
+                // FUNCIÓN SECRETA: Presiona Backspace para saltar de nivel instantáneamente
+                // Esta función reduce el tiempo a 1 segundo para pasar rápidamente al siguiente nivel
+                // Útil para pruebas de desarrollo o para avanzar rápidamente en el juego
+                else if (e.key === 'Backspace' && !juegoPausado) {
+                    e.preventDefault();
+                    tiempoRestante = 1;
+                    actualizarInterfaz();
+                }
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            teclas[e.key] = false;
+        });
+        
+        // ============================================
+        // SISTEMA DE AUDIO - EFECTOS DE SONIDO
+        // ============================================
+        const sonidos = {
+            hit: new Audio('Sound/Effects/Hit.wav'),
+            loseLife: new Audio('Sound/Effects/Lose.wav'),
+            winLevel: new Audio('Sound/Effects/Win.wav'),
+            gameBeat: new Audio('Sound/Effects/Game Beaten.wav'),
+            powerUp: new Audio('Sound/Effects/Power Up.wav'),
+            select: new Audio('Sound/Effects/Select.wav'),
+            pause: new Audio('Sound/Effects/Pause.wav'),
+            oneUp: new Audio('Sound/Effects/1up.wav') // NUEVO: sonido de 1up
+        };
+
+        // Configurar volumen de los sonidos (ajusta entre 0.0 y 1.0)
+        Object.values(sonidos).forEach(audio => {
+            audio.volume = 0.7;
+        });
+
+        // Funciones para reproducir sonidos
+        function reproducirSonidoHit() {
+            sonidos.hit.currentTime = 0;
+            sonidos.hit.play().catch(e => console.log('Error reproduciendo Hit:', e));
+        }
+
+        function reproducirSonidoLose() {
+            sonidos.loseLife.currentTime = 0;
+            sonidos.loseLife.play().catch(e => console.log('Error reproduciendo Lose:', e));
+        }
+
+        function reproducirSonidoWin() {
+            sonidos.winLevel.currentTime = 0;
+            sonidos.winLevel.play().catch(e => console.log('Error reproduciendo Win:', e));
+        }
+
+        function reproducirSonidoGameBeat() {
+            sonidos.gameBeat.currentTime = 0;
+            sonidos.gameBeat.play().catch(e => console.log('Error reproduciendo Game Beaten:', e));
+        }
+
+        function reproducirSonidoPowerUp() {
+            sonidos.powerUp.currentTime = 0;
+            sonidos.powerUp.play().catch(e => console.log('Error reproduciendo Power Up:', e));
+        }
+
+        function reproducirSonidoSelect() {
+            sonidos.select.currentTime = 0;
+            sonidos.select.play().catch(e => console.log('Error reproduciendo Select:', e));
+        }
+        function reproducirSonidoPause() { // NUEVO
+            sonidos.pause.currentTime = 0;
+            sonidos.pause.play().catch(e => console.log('Error reproduciendo Pause:', e));
+        }
+        function reproducirSonido1Up() { // NUEVO
+            sonidos.oneUp.currentTime = 0;
+            sonidos.oneUp.play().catch(e => console.log('Error reproduciendo 1up:', e));
+        }
+        // ============================================
+        // FIN SISTEMA DE AUDIO
+        // ============================================
+
+        function iniciarJuego() {
+            if (!recursosCargados) return;
+            finalizarInvencibilidad();
+            
+            document.getElementById('pantallaInicio').classList.remove('activa');
+            document.getElementById('pantallaFin').classList.remove('activa');
+            document.getElementById('juegoContenedor').classList.remove('menu-activo');
+            lienzo.style.display = 'block';
+            document.getElementById('info').classList.add('activo');
+            document.getElementById('puntuacion').classList.add('activo'); // NUEVO: mostrar puntuación
+            mostrarTux3DDecorativo(false);
+
+            reproducirMusicaJuego();
+
+            nivel = 1;
+            vidas = 3;
+            puntuacion = 0; // NUEVO: reiniciar puntuación
+            tiempoRestante = 60;
+            objetosCayendo = [];
+            kernels = [];
+            oneUps = []; // NUEVO: limpiar array de 1ups
+            invencible = false;
+            juegoActivo = true;
+            juegoPausado = false;
+            
+            document.getElementById('mensajeInvencible').style.display = 'none';
+            
+            jugador.x = lienzo.width / 2 - 45;
+            actualizarInterfaz();
+            actualizarCodigoNivel(); // NUEVO: generar código inicial
+            
+            buclePrincipal();
+
+            juegoPausado = true;
+            cuentaRegresivaActiva = true;
+            reducirVolumenMusicaJuego();
+            mostrarCuentaRegresiva(() => {
+                juegoPausado = false;
+                cuentaRegresivaActiva = false;
+                restaurarVolumenMusicaJuego();
+                temporizadorNivel();
+            });
+        }
+        
+        function reiniciarJuego() {
+            iniciarJuego();
+        }
+        
+        function temporizadorNivel() {
+            if (!juegoActivo) return;
+            
+            const intervalo = setInterval(() => {
+                if (!juegoActivo) {
+                    clearInterval(intervalo);
+                    return;
+                }
+                
+                if (!juegoPausado) {
+                    tiempoRestante--;
+                    puntuacion += 10; // Sumar 10 puntos cada segundo
+                    actualizarInterfaz();
+                    
+                    if (tiempoRestante <= 0) {
+                        clearInterval(intervalo);
+                        pasarSiguienteNivel();
+                    }
+                }
+            }, 1000);
+        }
+        
+        function pasarSiguienteNivel() {
+            if (nivel >= 10) {
+                finalizarJuego(true);
+            } else {
+                reproducirSonidoWin();
+                puntuacion += 500; // Sumar 500 puntos al pasar de nivel
+                nivel++;
+                tiempoRestante = 60;
+                objetosCayendo = [];
+                kernels = [];
+                oneUps = []; // NUEVO: limpiar 1ups al pasar de nivel
+                
+                finalizarInvencibilidad();
+                document.getElementById('mensajeInvencible').style.display = 'none';
+                
+                actualizarInterfaz();
+                actualizarCodigoNivel(); // NUEVO: actualizar código de nivel
+
+                juegoPausado = true;
+                cuentaRegresivaActiva = true;
+                reducirVolumenMusicaJuego();
+                mostrarCuentaRegresiva(() => {
+                    juegoPausado = false;
+                    cuentaRegresivaActiva = false;
+                    restaurarVolumenMusicaJuego();
+                    temporizadorNivel();
+                });
+            }
+        }
+        
+        function perderVida() {
+            if (invencible) return;
+            
+            reproducirSonidoHit(); // Sonido al perder vida
+            vidas--;
+            actualizarInterfaz();
+            
+            if (vidas <= 0) {
+                finalizarJuego(false);
+            }
+        }
+        
+        function finalizarInvencibilidad() {
+            if (window.invencibilidadInterval) {
+                clearInterval(window.invencibilidadInterval);
+                window.invencibilidadInterval = null;
+            }
+            invencible = false;
+            tiempoInvencible = 0;
+            document.getElementById('mensajeInvencible').style.display = 'none';
+            
+            // NUEVO: Remover efecto visual de invencibilidad de los sprites de Tux
+            aplicarEfectoInvencibilidadTux(false);
+        }
+        
+        function activarInvencibilidad() {
+            reproducirSonidoPowerUp(); // Sonido al recoger kernel
+            
+            // NUEVO: Sumar puntos por kernel
+            puntuacion += 50;
+            actualizarInterfaz();
+            
+            // Limpiar cualquier temporizador existente
+            if (window.invencibilidadInterval) {
+                clearInterval(window.invencibilidadInterval);
+            }
+            if (window.invencibilidadTimeout) {
+                clearTimeout(window.invencibilidadTimeout);
+            }
+
+            finalizarInvencibilidad();
+            invencible = true;
+            const duracionInvencibilidad = 5000;
+            tiempoInvencible = duracionInvencibilidad;
+            if (!juegoPausado) {
+                document.getElementById('mensajeInvencible').style.display = 'block';
+            }
+            
+            // NUEVO: Aplicar efecto visual de invencibilidad a los sprites de Tux
+            aplicarEfectoInvencibilidadTux(true);
+            
+            window.invencibilidadInterval = setInterval(() => {
+                if (!invencible || juegoPausado) return;
+                tiempoInvencible -= 100;
+                if (tiempoInvencible <= 0) {
+                    finalizarInvencibilidad();
+                }
+            }, 100);
+        }
+        
+        // NUEVO: Función para aplicar/remover efecto visual de invencibilidad a sprites de Tux
+        function aplicarEfectoInvencibilidadTux(activar) {
+            // El efecto se aplica directamente en dibujarJugador() usando la variable 'invencible'
+            if (activar) {
+                console.log('✨ Efecto de invencibilidad aplicado a sprites de Tux');
+            } else {
+                console.log('✅ Efecto de invencibilidad removido de sprites de Tux');
+            }
+        }
+        
+        async function guardarPuntajeFirestore(score, nivelAlcanzado, victoria) {
+            try {
+                const { db, collection, addDoc, auth } = await import('./JS/firebase_config.js');
+                
+                const usuario = auth.currentUser?.email || 'Invitado';
+                
+                const docRef = await addDoc(collection(db, 'scores'), {
+                    usuario: usuario,
+                    puntuacion: score,
+                    nivel: nivelAlcanzado,
+                    victoria: victoria,
+                    fecha: new Date().toISOString(),
+                    timestamp: Date.now()
+                });
+                
+                console.log('✅ Puntaje guardado correctamente en Firestore con ID:', docRef.id);
+            } catch (error) {
+                console.error('❌ Error al guardar puntaje:', error);
+                console.error('Detalles del error:', error.message);
+            }
+        }
+
+        async function finalizarJuego(gano) {
+            juegoActivo = false;
+            
+            // Reproducir sonido según resultado
+            if (gano) {
+                reproducirSonidoGameBeat(); // Sonido al completar el juego
+            } else {
+                reproducirSonidoLose(); // Sonido al perder el juego
+            }
+
+            guardarPuntajeFirestore(puntuacion, nivel, gano);
+            
+            // Volver a música del menú
+            reproducirMusicaMenu();
+            
+            // Ocultar el canvas y la información del juego
+            lienzo.style.display = 'none'; // Cambiar classList.remove por style.display
+            document.getElementById('info').classList.remove('activo');
+            document.getElementById('puntuacion').classList.remove('activo'); // NUEVO: ocultar puntuación
+            
+            // Ocultar mensaje de invencible si está visible
+            document.getElementById('mensajeInvencible').style.display = 'none';
+            
+            const pantallaFin = document.getElementById('pantallaFin');
+            const mensajeFinal = document.getElementById('mensajeFinal');
+            const estadisticasFinal = document.getElementById('estadisticasFinal');
+            const imagenFinal = document.getElementById('imagenFinal');
+            
+            if (gano) {
+                mensajeFinal.textContent = '🎉 ¡FELICITACIONES! 🎉';
+                estadisticasFinal.innerHTML = `¡Has completado los 10 niveles!<br>Puntuación Final: ${puntuacion} puntos`;
+                imagenFinal.style.display = 'block';
+            } else {
+                mensajeFinal.textContent = '💔 FIN DEL JUEGO 💔';
+                estadisticasFinal.innerHTML = `
+                    Llegaste al: Nivel ${nivel}<br>
+                    Puntuación Final: ${puntuacion} puntos
+                `;
+                imagenFinal.style.display = 'none';
+            }
+            
+            pantallaFin.classList.add('activa');
+        }
+
+        
+        
+        function actualizarInterfaz() {
+            document.getElementById('nivelActual').textContent = nivel;
+            document.getElementById('tiempo').textContent = tiempoRestante;
+            document.getElementById('vidas').textContent = vidas;
+            document.getElementById('puntos').textContent = puntuacion; // NUEVO: actualizar puntos
+        }
+        
+        // NUEVO: Función para actualizar código de nivel actual
+        async function actualizarCodigoNivel() {
+            try {
+                codigoNivelActual = await generarHashNivel(nivel);
+            } catch (error) {
+                console.error('Error generando código de nivel:', error);
+                codigoNivelActual = 'No disponible';
+            }
+        }
+        
+        function crearObjetoCayendo() {
+            const config = obtenerConfigNivel(nivel);
+            const logo = logosSO[Math.floor(Math.random() * logosSO.length)];
+            const tamanoVisual = 50;
+            const reduccionHitbox = 10; // 5 píxeles por cada lado
+            
+            objetosCayendo.push({
+                x: Math.random() * (lienzo.width - tamanoVisual),
+                y: -tamanoVisual,
+                ancho: tamanoVisual - reduccionHitbox, // Reducir hitbox
+                alto: tamanoVisual - reduccionHitbox,  // Reducir hitbox
+                velocidad: config.velocidad,
+                logo: logo,
+                tamanoVisual: tamanoVisual // Mantener tamaño visual original
+            });
+        }
+        
+        function crearKernel() {
+            const tamanoVisual = 40;
+            const reduccionHitbox = 8;
+            
+            kernels.push({
+                x: Math.random() * (lienzo.width - tamanoVisual),
+                y: -tamanoVisual,
+                ancho: tamanoVisual - reduccionHitbox,
+                alto: tamanoVisual - reduccionHitbox,
+                velocidad: 4 + (nivel * 0.2),
+                tamanoVisual: tamanoVisual
+            });
+        }
+        
+        // NUEVO: Función para crear 1up (muy raro)
+        function crear1Up() {
+            const tamanoVisual = 40;
+            const reduccionHitbox = 8;
+            
+            oneUps.push({
+                x: Math.random() * (lienzo.width - tamanoVisual),
+                y: -tamanoVisual,
+                ancho: tamanoVisual - reduccionHitbox,
+                alto: tamanoVisual - reduccionHitbox,
+                velocidad: 4 + (nivel * 0.2),
+                tamanoVisual: tamanoVisual
+            });
+        }
+        
+        function detectarColision(obj1, obj2) {
+            return obj1.x < obj2.x + obj2.ancho &&
+                   obj1.x + obj1.ancho > obj2.x &&
+                   obj1.y < obj2.y + obj2.alto &&
+                   obj1.y + obj1.alto > obj2.y;
+        }
+        
+        // NUEVO: Función para dibujar 1up
+        function dibujar1Up(oneUp) {
+            if (imagenes.oneUp && imagenes.oneUp.complete) {
+                const offsetX = (oneUp.tamanoVisual - oneUp.ancho) / 2;
+                const offsetY = (oneUp.tamanoVisual - oneUp.alto) / 2;
+                ctx.drawImage(
+                    imagenes.oneUp,
+                    oneUp.x - offsetX,
+                    oneUp.y - offsetY,
+                    oneUp.tamanoVisual,
+                    oneUp.tamanoVisual
+                );
+            }
+        }
+        
+        function dibujarJugador() {
+            if (!imagenes.tuxStand.complete) return;
+
+            // Desactivar suavizado antes de dibujar
+            ctx.imageSmoothingEnabled = false;
+
+            // Calcular offset para centrar la hitbox en el sprite visual
+            const offsetX = (jugador.tamanoVisual - jugador.ancho) / 2;
+            const offsetY = (jugador.tamanoVisual - jugador.alto) / 2;
+            
+            // NUEVO: Dibujar círculo de invencibilidad DETRÁS del sprite
+            if (invencible) {
+                const tiempo = Date.now() * 0.01;
+                const intensidad = (Math.sin(tiempo) + 1) * 0.5; // 0 a 1
+                
+                if (intensidad > 0.3) {
+                    ctx.save();
+                    
+                    // Círculo amarillo brillante detrás de Tux
+                    const centroX = jugador.x + (jugador.ancho / 2);
+                    const centroY = jugador.y + (jugador.alto / 2);
+                    const radio = 35 + (intensidad * 10); // Radio variable para efecto pulsante
+                    
+                    ctx.beginPath();
+                    ctx.arc(centroX, centroY, radio, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 0, ${0.3 + intensidad * 0.4})`; // Amarillo con transparencia
+                    ctx.fill();
+                    
+                    // Añadir un resplandor exterior
+                    ctx.beginPath();
+                    ctx.arc(centroX, centroY, radio + 8, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 100, ${0.1 + intensidad * 0.2})`;
+                    ctx.fill();
+                    
+                    ctx.restore();
+                }
+            }
+
+            // Si el jugador está quieto
+            if (tuxSprite.direccion === 0) {
+                // Dibujar el sprite normal
+                ctx.drawImage(
+                    imagenes.tuxStand,
+                    Math.round(jugador.x - offsetX), // Redondear posiciones
+                    Math.round(jugador.y - offsetY),
+                    jugador.tamanoVisual,
+                    jugador.tamanoVisual
+                );
+                
+                tuxSprite.frameActual = 0;
+                tuxSprite.contadorAnimacion = 0;
+                
+                return;
+            }
+
+            // Si se está moviendo, usar los sprites de movimiento
+            const spritesActuales = tuxSprite.direccion === 1 ? imagenes.tuxRight : imagenes.tuxLeft;
+            
+            if (spritesActuales[tuxSprite.frameActual] && spritesActuales[tuxSprite.frameActual].complete) {
+                // Dibujar el sprite normal
+                ctx.drawImage(
+                    spritesActuales[tuxSprite.frameActual],
+                    Math.round(jugador.x - offsetX), // Redondear posiciones
+                    Math.round(jugador.y - offsetY),
+                    jugador.tamanoVisual,
+                    jugador.tamanoVisual
+                );
+            }
+            
+            // Reactivar suavizado después de dibujar Tux (para otros elementos)
+            ctx.imageSmoothingEnabled = true;
+
+            // Actualizar animación
+            tuxSprite.contadorAnimacion++;
+            if (tuxSprite.contadorAnimacion >= tuxSprite.velocidadAnimacion) {
+                tuxSprite.contadorAnimacion = 0;
+                tuxSprite.frameActual = (tuxSprite.frameActual + 1) % tuxSprite.framesTotal;
+            }
+        }
+        
+        function dibujarObjeto(obj) {
+            if (obj.logo.imagen && obj.logo.imagen.complete) {
+                // Centrar el sprite visual respecto a la hitbox
+                const offsetX = (obj.tamanoVisual - obj.ancho) / 2;
+                const offsetY = (obj.tamanoVisual - obj.alto) / 2;
+                ctx.drawImage(
+                    obj.logo.imagen, 
+                    obj.x - offsetX, 
+                    obj.y - offsetY, 
+                    obj.tamanoVisual, 
+                    obj.tamanoVisual
+                );
+            }
+        }
+        
+        function dibujarKernel(kernel) {
+            if (imagenes.kernel && imagenes.kernel.complete) {
+                // Centrar el sprite visual respecto a la hitbox
+                const offsetX = (kernel.tamanoVisual - kernel.ancho) / 2;
+                const offsetY = (kernel.tamanoVisual - kernel.alto) / 2;
+                ctx.drawImage(
+                    imagenes.kernel,
+                    kernel.x - offsetX,
+                    kernel.y - offsetY,
+                    kernel.tamanoVisual,
+                    kernel.tamanoVisual
+                );
+            }
+        }
+        
+        function dibujarFondo() {
+            if (imagenes.fondo.complete) {
+                // Dibujamos el fondo ajustado al canvas
+                ctx.drawImage(imagenes.fondo, 0, 0, lienzo.width, lienzo.height);
+                
+                // Añadimos una capa semitransparente para mejor visibilidad
+                ctx.fillStyle = 'rgba(135, 206, 235, 0.2)';
+                ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+            } else {
+                // Fondo de respaldo mientras carga
+                ctx.fillStyle = '#87CEEB';
+                ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+            }
+        }
+        
+        function dibujarSuelo() {
+            // Suelo con nieve
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillRect(0, lienzo.height - 40, lienzo.width, 40);
+            
+            // Borde superior del suelo
+            ctx.fillStyle = 'rgba(200, 230, 255, 0.9)';
+            ctx.fillRect(0, lienzo.height - 45, lienzo.width, 5);
+        }
+        
+        let contadorFrames = 0;
+        
+        function buclePrincipal() {
+            if (!juegoActivo) return;
+            
+            // Siempre dibujamos el fondo y el suelo
+            dibujarFondo();
+            dibujarSuelo();
+            
+            if (!juegoPausado || cuentaRegresivaActiva) {
+                // Dibujar objetos del juego durante la cuenta regresiva
+                // Dibujar objetos cayendo
+                objetosCayendo.forEach(obj => {
+                    dibujarObjeto(obj);
+                });
+                
+                // Dibujar kernels
+                kernels.forEach(kernel => {
+                    dibujarKernel(kernel);
+                });
+                
+                // NUEVO: Dibujar 1ups
+                oneUps.forEach(oneUp => {
+                    dibujar1Up(oneUp);
+                });
+                
+                // Dibujar jugador
+                dibujarJugador();
+            }
+            
+            if (juegoPausado && !cuentaRegresivaActiva) {
+                // Mostrar mensaje de pausa con instrucción de Escape
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+                
+                // NUEVO: Ocultar puntuación durante pausa
+                document.getElementById('puntuacion').style.visibility = 'hidden';
+                
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = "bold 80px 'Luckiest Guy', Arial, sans-serif"; // Reducido de 96px para ajustarse mejor
+                ctx.textAlign = 'center';
+                
+                // Aplicar text-shadow para el texto de pausa
+                ctx.shadowColor = '#000';
+                ctx.shadowBlur = 3;
+                ctx.shadowOffsetX = 3;
+                ctx.shadowOffsetY = 3;
+                
+                ctx.fillText('PAUSA', 400, 250); // Posición fija para canvas 800x600
+                
+                // Resetear shadow para los siguientes textos
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                
+                ctx.font = "18px 'Luckiest Guy', Arial, sans-serif"; // Reducido de 20px
+                
+                // Aplicar text-shadow para los textos de instrucción
+                ctx.shadowColor = '#000';
+                ctx.shadowBlur = 2;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+
+                ctx.fillText('Presiona "ESPACIO" para continuar', 400, 310);
+                ctx.fillText('Presiona "ESCAPE" para volver al menú', 400, 340);
+                
+                // Mostrar código de nivel en la parte inferior con margen
+                ctx.font = "22px 'Luckiest Guy', Arial, sans-serif"; // Reducido de 26px
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = '#000';
+                ctx.shadowBlur = 2;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                ctx.fillText('Tu código de nivel:', 400, 480); // Posición fija
+                
+                // Dibujar el código directamente en el canvas
+                ctx.font = "20px 'Consolas', monospace"; // Reducido de 22px
+                ctx.fillStyle = '#5adaff';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 1;
+                if (codigoNivelActual) {
+                    ctx.strokeText(codigoNivelActual, 400, 510); // Posición fija
+                    ctx.fillText(codigoNivelActual, 400, 510);
+                }
+                
+                // Texto de instrucción debajo
+                ctx.font = "16px 'Luckiest Guy', Arial, sans-serif"; // Reducido de 18px
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 1;
+                ctx.strokeText('Presiona C para copiar el código', 400, 540); // Posición fija
+                ctx.fillText('Presiona C para copiar el código', 400, 540);
+                
+                // Crear elemento invisible para permitir copia del código (mantener por compatibilidad)
+                if (!document.getElementById('codigoTemporal')) {
+                    const codigoDiv = document.createElement('div');
+                    codigoDiv.id = 'codigoTemporal';
+                    codigoDiv.style.position = 'absolute';
+                    codigoDiv.style.left = '-9999px';
+                    codigoDiv.style.opacity = '0';
+                    codigoDiv.style.userSelect = 'text';
+                    codigoDiv.style.pointerEvents = 'none';
+                    document.body.appendChild(codigoDiv);
+                }
+                document.getElementById('codigoTemporal').textContent = codigoNivelActual || '';
+                
+                // Limpiar shadow
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                ctx.textAlign = 'left';
+            } else {
+                // NUEVO: Mostrar puntuación cuando no está pausado
+                document.getElementById('puntuacion').style.visibility = 'visible';
+            }
+            
+            // Solo actualizar la lógica del juego si no está pausado
+            if (!juegoPausado) {
+                // Mover jugador
+                tuxSprite.direccion = 0;
+                
+                if ((teclas['ArrowLeft'] || teclas['a'] || teclas['A']) && jugador.x > 0) {
+                    jugador.x -= jugador.velocidad;
+                    tuxSprite.direccion = -1;
+                }
+                if ((teclas['ArrowRight'] || teclas['d'] || teclas['D']) && jugador.x < lienzo.width - jugador.ancho) {
+                    jugador.x += jugador.velocidad;
+                    tuxSprite.direccion = 1;
+                }
+                
+                // Crear nuevos objetos cayendo
+                const config = obtenerConfigNivel(nivel);
+                if (contadorFrames % config.frecuencia === 0) {
+                    crearObjetoCayendo();
+                }
+                
+                // Crear kernels ocasionalmente
+                if (contadorFrames % 1200 === 0) {
+                    crearKernel();
+                }
+                
+                // NUEVO: Crear 1ups MUY raramente (1-2 por nivel aproximadamente)
+                // Usando un número primo grande para frecuencia aleatoria
+                if (contadorFrames % 1800 === 0) { // Cada 30 segundos aprox (60 fps * 30)
+                    crear1Up();
+                }
+                
+                // Actualizar posiciones y colisiones
+                for (let i = objetosCayendo.length - 1; i >= 0; i--) {
+                    const obj = objetosCayendo[i];
+                    obj.y += obj.velocidad;
+                    
+                    if (obj.y > lienzo.height) {
+                        objetosCayendo.splice(i, 1);
+                    } else if (detectarColision(jugador, obj)) {
+                        perderVida();
+                        objetosCayendo.splice(i, 1);
+                    }
+                }
+                
+                for (let i = kernels.length - 1; i >= 0; i--) {
+                    const kernel = kernels[i];
+                    kernel.y += kernel.velocidad;
+                    
+                    if (kernel.y > lienzo.height) {
+                        kernels.splice(i, 1);
+                    } else if (detectarColision(jugador, kernel)) {
+                        activarInvencibilidad();
+                        kernels.splice(i, 1);
+                    }
+                }
+                
+                // NUEVO: Actualizar y detectar colisiones con 1ups
+                for (let i = oneUps.length - 1; i >= 0; i--) {
+                    const oneUp = oneUps[i];
+                    oneUp.y += oneUp.velocidad;
+                    
+                    if (oneUp.y > lienzo.height) {
+                        oneUps.splice(i, 1);
+                    } else if (detectarColision(jugador, oneUp)) {
+                        // Sumar una vida y puntos
+                        vidas++;
+                        puntuacion += 100; // NUEVO: sumar puntos por 1up
+                        actualizarInterfaz();
+                        reproducirSonido1Up(); // CAMBIADO: usar sonido específico de 1up
+                        oneUps.splice(i, 1);
+                    }
+                }
+                
+                contadorFrames++;
+            }
+            
+            requestAnimationFrame(buclePrincipal);
+        }
+        
+        // Asegurarnos de que la imagen del kernel se cargue correctamente
+        imagenes.kernel.src = 'Resources/kernel.png'; // Verifica que el archivo esté en la carpeta Resources
+
+        // Variable para manejar la cuenta regresiva
+        let cuentaRegresivaActiva = false;
+
+        function mostrarCuentaRegresiva(callback) {
+            const lienzo = document.getElementById('lienzo');
+            const rect = lienzo.getBoundingClientRect();
+
+            const overlay = document.createElement('div');
+            overlay.id = 'overlayCuentaRegresiva';
+            overlay.style.position = 'absolute';
+            overlay.style.top = `${rect.top}px`;
+            overlay.style.left = `${rect.left}px`;
+            overlay.style.width = '800px';
+            overlay.style.height = '600px';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.zIndex = 100;
+            overlay.style.color = 'white';
+            overlay.style.fontSize = '120px'; // Tamaño fijo para canvas fijo
+            overlay.style.fontWeight = 'bold';
+            overlay.style.textAlign = 'center';
+            overlay.style.pointerEvents = 'none';
+            overlay.style.textShadow = 'var(--stroke-shadow)';
+            overlay.style.borderRadius = '10px';
+            document.body.appendChild(overlay);
+
+            let contador = 3;
+            overlay.textContent = contador;
+
+            const intervalo = setInterval(() => {
+                contador--;
+                overlay.textContent = contador;
+                
+                if (contador <= 0) {
+                    clearInterval(intervalo);
+                    setTimeout(() => {
+                        overlay.remove();
+                        juegoPausado = false; // Reanudar el juego solo después de que termine la cuenta regresiva
+                        cuentaRegresivaActiva = false;
+                        callback();
+                    }, 1000);
+                }
+            }, 1000);
+        }
+
+        function inicializarCanvas() {
+            const canvas = document.getElementById('lienzo');
+            
+            // Establecer tamaño fijo 4:3 (800x600)
+            canvas.width = 800;
+            canvas.height = 600;
+            canvas.style.width = '800px';
+            canvas.style.height = '600px';
+            
+            // Configurar el contexto de renderizado
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            ctx.mozImageSmoothingEnabled = false;
+            ctx.webkitImageSmoothingEnabled = false;
+            ctx.msImageSmoothingEnabled = false;
+        }
+
+        // Inicializar canvas al cargar la página
+        window.addEventListener('load', inicializarCanvas);
+
+        function volverAlMenu() {
+            reproducirMusicaMenu();
+            
+            // NUEVO: Limpiar overlay de cuenta regresiva si existe
+            const overlayExistente = document.getElementById('overlayCuentaRegresiva');
+            if (overlayExistente) {
+                overlayExistente.remove();
+            }
+            
+            // NUEVO: Limpiar área clickeable del código
+            const areaClick = document.getElementById('areaClickCodigo');
+            if (areaClick) {
+                areaClick.style.display = 'none';
+            }
+            
+            document.getElementById('pantallaFin').classList.remove('activa');
+            document.getElementById('pantallaInicio').classList.add('activa');
+            document.getElementById('juegoContenedor').classList.add('menu-activo');
+            
+            lienzo.style.display = 'none';
+            document.getElementById('info').classList.remove('activo');
+            document.getElementById('puntuacion').classList.remove('activo'); // NUEVO: ocultar puntuación
+            
+            juegoActivo = false;
+            juegoPausado = false;
+            cuentaRegresivaActiva = false; // NUEVO: resetear cuenta regresiva
+            nivel = 1;
+            vidas = 3;
+            puntuacion = 0; // NUEVO: reiniciar puntuación
+            tiempoRestante = 60;
+            objetosCayendo = [];
+            kernels = [];
+            oneUps = []; // NUEVO: limpiar 1ups al volver al menú
+            invencible = false;
+
+            mostrarTux3DDecorativo(true);
+        }
+
+        // Responsividad al pasar el mouse sobre la imagen 3dtux.png
+        const tux3d = document.getElementById('tux3dDecorativo');
+        tux3d.style.pointerEvents = 'auto'; // Permitir eventos de mouse
+
+        // Espera a que la imagen esté completamente cargada antes de crear el canvas
+        tux3d.addEventListener('load', function() {
+            tux3d._canvas = document.createElement('canvas');
+            tux3d._canvas.width = tux3d.naturalWidth;
+            tux3d._canvas.height = tux3d.naturalHeight;
+            const ctx = tux3d._canvas.getContext('2d');
+            ctx.drawImage(tux3d, 0, 0);
+        });
+
+        tux3d.addEventListener('mousemove', function(e) {
+            // Si el canvas aún no está listo, no hacer nada
+            if (!tux3d._canvas) return;
+            const rect = tux3d.getBoundingClientRect();
+            const x = Math.floor((e.clientX - rect.left) * tux3d.naturalWidth / rect.width);
+            const y = Math.floor((e.clientY - rect.top) * tux3d.naturalHeight / rect.height);
+            const ctx = tux3d._canvas.getContext('2d');
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            // Si el pixel no es transparente y tiene color
+            if (pixel[3] > 32) {
+                tux3d.classList.add('hovered');
+            } else {
+                tux3d.classList.remove('hovered');
+            }
+        });
+
+        tux3d.addEventListener('mouseleave', function() {
+            tux3d.classList.remove('hovered');
+        });
+
+        // Mostrar/ocultar el Tux 3D decorativo según el menú principal o pantalla de fin
+        function mostrarTux3DDecorativo(visible) {
+            const tux3d = document.getElementById('tux3dDecorativo');
+            tux3d.style.display = visible ? 'block' : 'none';
+        }
+
+        // Al cargar la página, verificar autenticación y mostrar el Tux 3D si el menú está activo
+        window.addEventListener('DOMContentLoaded', async function() {
+            // Verificar autenticación
+            try {
+                const { auth, onAuthStateChanged } = await import('./JS/firebase_config.js');
+                
+                onAuthStateChanged(auth, (user) => {
+                    if (!user) {
+                        // Si no hay usuario autenticado, redirigir al login
+                        console.log('Usuario no autenticado, redirigiendo al login...');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    
+                    console.log('Usuario autenticado:', user.email);
+                    // El usuario está autenticado, continuar con la carga normal
+                    mostrarTux3DDecorativo(true);
+                    mostrarModalAudio();
+                });
+                
+            } catch (error) {
+                console.error('Error al verificar autenticación:', error);
+                // En caso de error, redirigir al login como medida de seguridad
+                window.location.href = 'index.html';
+            }
+        });
+
+        function mostrarInstrucciones() {
+            if (!recursosCargados) return;
+            document.getElementById('pantallaInicio').classList.remove('activa');
+            document.getElementById('pantallaInstrucciones').classList.add('activa');
+        }
+        function cerrarInstrucciones() {
+            document.getElementById('pantallaInstrucciones').classList.remove('activa');
+            document.getElementById('pantallaInicio').classList.add('activa');
+        }
+
+        async function mostrarDashboard() {
+            if (!recursosCargados) return;
+            
+            // Cambiar pantallas
+            document.getElementById('pantallaInicio').classList.remove('activa');
+            document.getElementById('pantallaDashboard').classList.add('activa');
+            
+            const tablaPuntajesBody = document.getElementById('tablaPuntajesBody');
+            
+            if (!tablaPuntajesBody) {
+                console.error('No se encontró el elemento tablaPuntajesBody');
+                return;
+            }
+            
+            // Mostrar mensaje de carga
+            tablaPuntajesBody.innerHTML = '<tr><td colspan="2">Cargando puntajes...</td></tr>';
+            
+            try {
+                const { db, collection, query, orderBy, limit, getDocs } = await import('./JS/firebase_config.js');
+                
+                console.log('[v0] Iniciando consulta a Firestore...');
+                
+                // Consultar los mejores 10 puntajes
+                const scoresRef = collection(db, 'scores');
+                const q = query(scoresRef, orderBy('puntuacion', 'desc'), limit(10));
+                
+                console.log('[v0] Ejecutando query...');
+                const querySnapshot = await getDocs(q);
+                
+                console.log('[v0] Query completada. Documentos encontrados:', querySnapshot.size);
+                
+                // Limpiar tabla
+                tablaPuntajesBody.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    console.log('[v0] No hay puntajes en la base de datos');
+                    tablaPuntajesBody.innerHTML = '<tr><td colspan="2">No hay puntajes registrados</td></tr>';
+                    return;
+                }
+                
+                let contador = 0;
+                querySnapshot.forEach((docSnap) => {
+                    contador++;
+                    const data = docSnap.data();
+                    console.log(`[v0] Puntaje ${contador}:`, data);
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.usuario || 'Jugador'}</td>
+                        <td>${data.puntuacion || 0}</td>
+                    `;
+                    tablaPuntajesBody.appendChild(row);
+                });
+                
+                console.log('✅ Puntajes cargados correctamente en la tabla');
+                
+            } catch (error) {
+                console.error('❌ Error al cargar puntajes:', error);
+                console.error('Tipo de error:', error.name);
+                console.error('Mensaje:', error.message);
+                console.error('Stack:', error.stack);
+                
+                tablaPuntajesBody.innerHTML = `<tr><td colspan="2">Error al cargar puntajes: ${error.message}</td></tr>`;
+            }
+        }
+
+        function cerrarDashboard() {
+            document.getElementById('pantallaDashboard').classList.remove('activa');
+            document.getElementById('pantallaInicio').classList.add('activa');
+        }
+
+        /* CHANGE: Adding Continue Adventure functions */
+        function continuarAventura() {
+            if (!recursosCargados) return;
+            document.getElementById('pantallaInicio').classList.remove('activa');
+            document.getElementById('pantallaContinuar').classList.add('activa');
+            
+            const input = document.getElementById('inputHash');
+            input.value = '';
+            input.focus();
+            
+            // Agregar evento para limpiar al pegar (SIN normalizar mayúsculas/minúsculas)
+            input.addEventListener('paste', function(e) {
+                setTimeout(() => {
+                    let valor = this.value.trim();
+                    // Solo limpiar espacios extra - NO tocar mayúsculas/minúsculas
+                    valor = valor.replace(/\s+/g, '');
+                    this.value = valor;
+                    console.log('Código pegado y limpiado:', valor);
+                }, 10);
+            });
+            
+            // Agregar evento Enter para procesamiento rápido
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    procesarContinuar();
+                }
+            });
+        }
+
+        function cerrarContinuar() {
+            document.getElementById('pantallaContinuar').classList.remove('activa');
+            document.getElementById('pantallaInicio').classList.add('activa');
+        }
+
+        async function generarHashNivel(nivel) {
+            try {
+                const { auth } = await import('./JS/firebase_config.js');
+                const email = auth.currentUser?.email || 'invitado';
+                
+                // Combinar email y nivel en formato: email|nivel
+                const datos = `${email}|${nivel}`;
+                
+                // Convertir a base64
+                const hash = btoa(datos);
+                
+                // Formato final: TUX-[HASH_BASE64]
+                return `TUX-${hash}`;
+            } catch (error) {
+                console.error('[v0] Error generando hash:', error);
+                return null;
+            }
+        }
+
+        async function validarHash(hash) {
+            try {
+                console.log('Validando hash:', hash);
+                
+                // Validar formato básico
+                if (!hash || typeof hash !== 'string') {
+                    console.log('❌ Hash vacío o no es string');
+                    return null;
+                }
+                
+                if (!hash.startsWith('TUX-')) {
+                    console.log('❌ Hash no comienza con TUX-');
+                    return null;
+                }
+                
+                // Extraer la parte base64
+                const hashBase64 = hash.substring(4);
+                console.log('Base64 extraído:', hashBase64);
+                
+                if (!hashBase64) {
+                    console.log('❌ Parte base64 vacía');
+                    return null;
+                }
+                
+                // Decodificar base64
+                const datos = atob(hashBase64);
+                console.log('Datos decodificados:', datos);
+                
+                // Separar email y nivel
+                const partes = datos.split('|');
+                if (partes.length !== 2) {
+                    console.log('❌ Formato de datos incorrecto, partes:', partes.length);
+                    return null;
+                }
+                
+                const email = partes[0];
+                const nivel = parseInt(partes[1]);
+                
+                console.log('Email:', email, 'Nivel parseado:', nivel);
+                
+                // Validar que el nivel sea válido (1-10)
+                if (isNaN(nivel) || nivel < 1 || nivel > 10) {
+                    console.log('❌ Nivel inválido:', nivel);
+                    return null;
+                }
+                
+                console.log('✅ Hash válido - Email:', email, 'Nivel:', nivel);
+                
+                return { email, nivel };
+            } catch (error) {
+                console.error('❌ Error validando hash:', error);
+                return null;
+            }
+        }
+
+        async function procesarContinuar() {
+            const input = document.getElementById('inputHash');
+            let hash = input.value.trim(); // NO normalizar a mayúsculas - mantener original
+            
+            // Solo limpiar espacios extra - NO tocar mayúsculas/minúsculas
+            hash = hash.replace(/\s+/g, '');
+            
+            if (!hash) {
+                alert('Por favor, ingresa un código de nivel.');
+                input.focus();
+                return;
+            }
+            
+            console.log('Procesando código:', hash);
+            
+            const resultado = await validarHash(hash);
+            
+            if (resultado === null) {
+                alert(`Código inválido: "${hash}"\n\nPor favor, verifica que el código esté completo y sea correcto.\n\nFormato esperado: TUX-[CÓDIGO]`);
+                input.value = '';
+                input.focus();
+                return;
+            }
+            
+            console.log(`✅ Código válido - Iniciando desde nivel ${resultado.nivel}`);
+            
+            // Iniciar el juego desde el nivel validado
+            iniciarJuegoDesdeNivel(resultado.nivel);
+        }
+
+        function iniciarJuegoDesdeNivel(nivelInicio) {
+            if (!recursosCargados) return;
+            finalizarInvencibilidad();
+            
+            document.getElementById('pantallaContinuar').classList.remove('activa');
+            document.getElementById('pantallaFin').classList.remove('activa');
+            document.getElementById('juegoContenedor').classList.remove('menu-activo');
+            lienzo.style.display = 'block';
+            document.getElementById('info').classList.add('activo');
+            document.getElementById('puntuacion').classList.add('activo');
+            mostrarTux3DDecorativo(false);
+
+            reproducirMusicaJuego();
+
+            nivel = nivelInicio;
+            vidas = 3; // SIEMPRE empezar con 3 vidas
+            puntuacion = 0; // SIEMPRE empezar con puntuación 0
+            tiempoRestante = 60;
+            objetosCayendo = [];
+            kernels = [];
+            oneUps = [];
+            invencible = false;
+            juegoActivo = true;
+            juegoPausado = false;
+            
+            document.getElementById('mensajeInvencible').style.display = 'none';
+            
+            jugador.x = lienzo.width / 2 - 45;
+            actualizarInterfaz();
+            actualizarCodigoNivel(); // NUEVO: generar código para el nivel actual
+            
+            buclePrincipal();
+
+            juegoPausado = true;
+            cuentaRegresivaActiva = true;
+            reducirVolumenMusicaJuego();
+            mostrarCuentaRegresiva(() => {
+                juegoPausado = false;
+                cuentaRegresivaActiva = false;
+                restaurarVolumenMusicaJuego();
+                temporizadorNivel();
+            });
+        }
+        /* END CHANGE */
+
+    </script>
+    
+    <!-- Importar módulo de logout -->
+    <script type="module" src="JS/logout.js"></script>
+    
+</body>
+</html>
