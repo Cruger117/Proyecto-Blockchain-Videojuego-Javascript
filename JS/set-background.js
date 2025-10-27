@@ -1,11 +1,11 @@
-import fondo from '../Resources/fondo.js';
-
+// Establece el fondo del body usando la imagen Fondo.jpg de Resources
 try {
-    if (fondo) {
-        document.body.style.backgroundImage = `url(${fondo})`;
-    } else {
-        console.warn('set-background: fondo importado vacío');
-    }
+    document.body.style.backgroundImage = "url('./Resources/Fondo.jpg')";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+    document.body.style.backgroundRepeat = "no-repeat";
+    document.body.style.backgroundAttachment = "fixed";
+    console.log('Fondo aplicado correctamente');
 } catch (err) {
-    console.error('set-background: error aplicando fondo', err);
+    console.error('Error al aplicar el fondo:', err);
 }
